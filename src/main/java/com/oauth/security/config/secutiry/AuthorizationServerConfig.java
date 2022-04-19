@@ -1,4 +1,4 @@
-package com.oauth.security.config;
+package com.oauth.security.config.secutiry;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
