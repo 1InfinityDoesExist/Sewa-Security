@@ -1,5 +1,7 @@
 package com.oauth.security.config.secutiry;
 
+import java.util.Arrays;
+
 import javax.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -47,16 +51,23 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		log.info("-----configure(ClientDetailsServiceConfigurer clients)-----");
-		clients.inMemory().withClient("patel").secret(passwordEncoder.encode("patel")).scopes("read", "write")
-				.accessTokenValiditySeconds(80000).refreshTokenValiditySeconds(80000)
-				.authorizedGrantTypes("password", "refresh_token");
+		clients.withClientDetails(oauthClientDetailsService);
 	}
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		log.info("-----configure(AuthorizationServerEndpointsConfigurer endpoints) -----");
+
+		TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+		tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), jwtAccessTokenConverter()));
 		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore())
-				.accessTokenConverter(jwtAccessTokenConverter());
+				.accessTokenConverter(jwtAccessTokenConverter()).tokenEnhancer(tokenEnhancerChain);
+	}
+
+	@Bean
+	public TokenEnhancer tokenEnhancer() {
+		log.info("----Custome token enhancer chain-----");
+		return new CustomTokenEnhancer();
 	}
 
 	@Bean

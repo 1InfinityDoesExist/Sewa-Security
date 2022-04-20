@@ -5,13 +5,23 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.constraints.NotEmpty;
+
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+import lombok.Builder;
 import lombok.Data;
 
+@CompoundIndexes({ @CompoundIndex(name = "product_isActive", def = "{'product':1, 'isActive':1}") })
+@Document(collection = "oauth_client")
+@Builder
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,11 +31,15 @@ public class OauthClients implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	private String id;
+
 	/**
 	 * The client id.
 	 * 
 	 * @return The client id.
 	 */
+
 	private String clientId;
 
 	/**
@@ -64,7 +78,7 @@ public class OauthClients implements Serializable {
 	 * 
 	 * @return The scope of this client.
 	 */
-	private Set<String> Scope;
+	private Set<String> scope;
 
 	/**
 	 * The grant types for which this client is authorized.
@@ -124,5 +138,12 @@ public class OauthClients implements Serializable {
 	 * @return a map of additional information
 	 */
 	private Map<String, Object> additionalInformation;
+
+	@NotEmpty(message = "Password filed must not be null or empty")
+	private String password;
+
+	private String product;
+
+	private boolean isActive;
 
 }
