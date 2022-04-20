@@ -1,7 +1,5 @@
 package com.oauth.security.config.secutiry;
 
-import javax.annotation.Resource;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,8 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-import com.oauth.security.service.security.OauthUserDetailsService;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -25,8 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecutiryConfig extends WebSecurityConfigurerAdapter {
 
-	@Resource(name = "oauth_user")
-	private OauthUserDetailsService oauthUserDetailsService;
+//	@Resource(name = "oauth_user")
+//	private OauthUserDetailsService oauthUserDetailsService;
 
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
@@ -57,7 +53,7 @@ public class WebSecutiryConfig extends WebSecurityConfigurerAdapter {
 		log.info("----configure(HttpSecurity http()-----");
 		http.csrf().disable();
 		http.httpBasic();
-		http.authorizeRequests().anyRequest().authenticated();
+		http.authorizeRequests().anyRequest().permitAll();
 
 	}
 
