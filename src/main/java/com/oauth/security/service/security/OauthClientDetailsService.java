@@ -3,6 +3,7 @@ package com.oauth.security.service.security;
 import org.springframework.security.oauth2.provider.ClientDetails;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
+import org.springframework.security.oauth2.provider.client.BaseClientDetails;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +14,8 @@ public class OauthClientDetailsService implements ClientDetailsService {
 
 	@Override
 	public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
-
-		return null;
+		log.info("----Load client by clientId-----");
+		return new BaseClientDetails();
 	}
 
 }
