@@ -8,11 +8,12 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Service
+@Service("oauth_client")
 public class OauthClientDetailsService implements ClientDetailsService {
 
 	@Override
 	public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
+
 		return null;
 	}
 
