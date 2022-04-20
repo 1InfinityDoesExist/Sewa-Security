@@ -1,5 +1,7 @@
 package com.oauth.security.config.secutiry;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +18,17 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 
+import com.oauth.security.service.security.OauthClientDetailsService;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+
+	@Resource(name = "oauth_client")
+	private OauthClientDetailsService oauthClientDetailsService;
 
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -28,12 +38,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+		log.info("-----configure(AuthorizationServerSecurityConfigurer security) -----");
+
 		security.checkTokenAccess("isAuthenticated()").tokenKeyAccess("isAuthenticated()")
 				.passwordEncoder(passwordEncoder);
 	}
 
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+		log.info("-----configure(ClientDetailsServiceConfigurer clients)-----");
 		clients.inMemory().withClient("patel").secret(passwordEncoder.encode("patel")).scopes("read", "write")
 				.accessTokenValiditySeconds(80000).refreshTokenValiditySeconds(80000)
 				.authorizedGrantTypes("password", "refresh_token");
@@ -41,6 +54,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+		log.info("-----configure(AuthorizationServerEndpointsConfigurer endpoints) -----");
 		endpoints.authenticationManager(authenticationManager).tokenStore(tokenStore())
 				.accessTokenConverter(jwtAccessTokenConverter());
 	}
