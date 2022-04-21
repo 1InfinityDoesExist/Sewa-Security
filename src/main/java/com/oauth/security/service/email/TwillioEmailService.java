@@ -24,7 +24,7 @@ public class TwillioEmailService {
 	@Value("${sendgrid.mail.from}")
 	private String sendGridFrom;
 
-	public void sendMail(String emailTo, String emailSubject, String emailBody) {
+	public Response sendMail(String emailTo, String emailSubject, String emailBody) {
 		log.info("---Method to send email.-----");
 		Email from = new Email(sendGridFrom);
 		Email to = new Email(emailTo);
@@ -39,8 +39,10 @@ public class TwillioEmailService {
 			request.setEndpoint("mail/send");
 			request.setBody(mail.build());
 			Response response = sg.api(request);
-			log.info("-----Response Status Code : {}", response.getStatusCode());
+			log.info("-----Response Status Code : {} and body {}", response.getStatusCode(), response.getBody());
+			return response;
 		} catch (IOException ex) {
 		}
+		return null;
 	}
 }
