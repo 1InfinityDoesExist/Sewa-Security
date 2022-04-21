@@ -4,7 +4,9 @@ import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+@Component
 public class OTPGenerator {
 
 	/* Length of OTP is Always 6 */

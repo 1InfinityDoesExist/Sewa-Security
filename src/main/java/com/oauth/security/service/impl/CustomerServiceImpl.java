@@ -65,13 +65,15 @@ public class CustomerServiceImpl implements CustomerService {
 
 		Response emailResponse = twillioEmailService.sendMail(registration.getEmail(),
 				String.format("Your one time password (OTP) - %s", otp), String.format(emailBody, otp));
-		if (emailResponse.getStatusCode() == 200) {
-			otpDetailsRepository.save(otpDetails);
-		}
 
 		RegistrationResponse response = new RegistrationResponse();
-		response.setMsg(String.format("OTP has been sent to %s ", otpDetails.getEmail()));
+
+		if (emailResponse.getStatusCode() == 202) {
+			otpDetailsRepository.save(otpDetails);
+			response.setMsg(String.format("OTP has been sent to %s ", otpDetails.getEmail()));
+		} else {
+			response.setMsg("Twillio server issue.");
+		}
 		return response;
 	}
-
 }
