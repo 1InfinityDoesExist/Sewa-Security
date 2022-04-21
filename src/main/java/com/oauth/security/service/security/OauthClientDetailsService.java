@@ -28,7 +28,7 @@ public class OauthClientDetailsService implements ClientDetailsService {
 	public ClientDetails loadClientByClientId(String clientId) throws ClientRegistrationException {
 		log.info("----Load client by clientId : {}", clientId);
 
-		OauthClients oauthClients = oauthClientRepository.findOauthClientsByClientId(clientId);
+		OauthClients oauthClients = oauthClientRepository.findOauthClientsByClientIdAndIsActive(clientId, true);
 		log.info("-----ClientDetails from DB : {}", oauthClients);
 		return new ClientDetails() {
 
