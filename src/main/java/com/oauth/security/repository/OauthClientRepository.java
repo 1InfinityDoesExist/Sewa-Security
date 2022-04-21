@@ -8,6 +8,6 @@ import com.oauth.security.entity.OauthClients;
 @Repository
 public interface OauthClientRepository extends MongoRepository<OauthClients, String> {
 
-	OauthClients findOauthClientsByClientId(String clientId);
+	OauthClients findOauthClientsByClientIdAndIsActive(String clientId, boolean b);
 
 }
