@@ -8,6 +8,6 @@ import com.oauth.security.entity.OtpDetails;
 @Repository
 public interface OtpDetailsRepository extends MongoRepository<OtpDetails, String> {
 
-	OtpDetails findOtpDetailsByEmail(String email);
+	OtpDetails findOtpDetailsByEmailAndProduct(String email, String product);
 
 }

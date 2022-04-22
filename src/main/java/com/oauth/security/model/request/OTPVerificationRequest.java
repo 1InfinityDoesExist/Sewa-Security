@@ -2,6 +2,8 @@ package com.oauth.security.model.request;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotBlank;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -20,5 +22,7 @@ public class OTPVerificationRequest implements Serializable {
 	private String mobile;
 	private int emailOtp;
 	private int mobileOtp;
+	@NotBlank
+	private String product;
 
 }

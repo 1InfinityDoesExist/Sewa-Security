@@ -24,10 +24,12 @@ public class CustomerControllerImpl implements CustomerController {
 	private CustomerService customerService;
 
 	@Override
-	public ResponseEntity<CustomerResponse> registerCustomerUsingPOST(CustomerRequest CustomerReqeust)
+	public ResponseEntity<CustomerResponse> registerCustomerUsingPOST(CustomerRequest customerRequest)
 			throws Exception {
-		log.info("-----");
-		return null;
+		log.info("-----CustomerControllerImpl Class, registerCustomerUsingPOST method-----");
+
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(customerService.registerCustomerUsingPOST(customerRequest));
 	}
 
 	@Override
@@ -39,9 +41,10 @@ public class CustomerControllerImpl implements CustomerController {
 
 	@Override
 	public ResponseEntity<OTPVerificationResponse> verifyEmailOTPUsingPOST(
-			OTPVerificationRequest oTPVerificationRequest) {
-		// TODO Auto-generated method stub
-		return null;
+			OTPVerificationRequest otpVerificationRequest) {
+		log.info("-----CustomerControllerImpl Class, customer email verification-----");
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(customerService.verifyConsumerEmailUsingPOST(otpVerificationRequest));
 	}
 
 	@Override
