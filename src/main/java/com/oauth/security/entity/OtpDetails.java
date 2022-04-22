@@ -26,6 +26,7 @@ public class OtpDetails implements Serializable {
 	private String mobile;
 	private int emailOtp;
 	private int mobileOtp;
+	private String product;
 
 	private Date emailOtpExpirtyDate;
 

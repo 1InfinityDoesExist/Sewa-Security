@@ -8,6 +8,6 @@ import com.oauth.security.entity.Customer;
 @Repository
 public interface CustomerRepository extends MongoRepository<Customer, String> {
 
-	Customer findCustomerByEmail(String email);
+	Customer findCustomerByEmailAndProduct(String email, String product);
 
 }

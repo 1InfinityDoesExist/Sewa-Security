@@ -1,5 +1,7 @@
 package com.oauth.security.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,7 +29,8 @@ public interface CustomerController {
 			@ApiResponse(code = 404, message = "Not Found") })
 	@RequestMapping(value = "/v1.0/customers/register-email", consumes = { "application/json" }, produces = {
 			"application/json" }, method = RequestMethod.POST)
-	public ResponseEntity<RegistrationResponse> registerEmailUsingPOST(@RequestBody RegistrationRequest registration);
+	public ResponseEntity<RegistrationResponse> registerEmailUsingPOST(
+			@Valid @RequestBody RegistrationRequest registration);
 
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created", response = OTPVerificationResponse.class),
 			@ApiResponse(code = 401, message = "Unauthorized"), @ApiResponse(code = 403, message = "Forbidden"),
@@ -35,14 +38,15 @@ public interface CustomerController {
 	@RequestMapping(value = "/v1.0/customers/verify-email-otp", consumes = { "application/json" }, produces = {
 			"application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<OTPVerificationResponse> verifyEmailOTPUsingPOST(
-			@RequestBody OTPVerificationRequest oTPVerificationRequest);
+			@Valid @RequestBody OTPVerificationRequest oTPVerificationRequest);
 
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created", response = RegistrationResponse.class),
 			@ApiResponse(code = 401, message = "Unauthorized"), @ApiResponse(code = 403, message = "Forbidden"),
 			@ApiResponse(code = 404, message = "Not Found") })
 	@RequestMapping(value = "/v1.0/customers/register-mobile", consumes = { "application/json" }, produces = {
 			"application/json" }, method = RequestMethod.POST)
-	public ResponseEntity<RegistrationResponse> registerMobileUsingPOST(@RequestBody RegistrationRequest registration);
+	public ResponseEntity<RegistrationResponse> registerMobileUsingPOST(
+			@Valid @RequestBody RegistrationRequest registration);
 
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created", response = OTPVerificationResponse.class),
 			@ApiResponse(code = 401, message = "Unauthorized"), @ApiResponse(code = 403, message = "Forbidden"),
@@ -50,7 +54,7 @@ public interface CustomerController {
 	@RequestMapping(value = "/v1.0/customers/verify-mobile-otp", consumes = { "application/json" }, produces = {
 			"application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<OTPVerificationResponse> verifyMobileOTPUsingPOST(
-			@RequestBody OTPVerificationRequest oTPVerificationRequest);
+			@Valid @RequestBody OTPVerificationRequest oTPVerificationRequest);
 
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created", response = CustomerResponse.class),
 			@ApiResponse(code = 401, message = "Unauthorized"), @ApiResponse(code = 403, message = "Forbidden"),
@@ -58,6 +62,6 @@ public interface CustomerController {
 	@RequestMapping(value = "/v1.0/customers", produces = { "application/json" }, consumes = {
 			"application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<CustomerResponse> registerCustomerUsingPOST(
-			@ApiParam(value = "CustomerReqeust", required = true) @RequestBody CustomerRequest CustomerReqeust)
+			@ApiParam(value = "CustomerReqeust", required = true) @Valid @RequestBody CustomerRequest CustomerReqeust)
 			throws Exception;
 }

@@ -39,9 +39,10 @@ public class CustomerControllerImpl implements CustomerController {
 
 	@Override
 	public ResponseEntity<OTPVerificationResponse> verifyEmailOTPUsingPOST(
-			OTPVerificationRequest oTPVerificationRequest) {
-		// TODO Auto-generated method stub
-		return null;
+			OTPVerificationRequest otpVerificationRequest) {
+		log.info("-----CustomerControllerImpl Class, customer email verification-----");
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(customerService.verifyConsumerEmailUsingPOST(otpVerificationRequest));
 	}
 
 	@Override

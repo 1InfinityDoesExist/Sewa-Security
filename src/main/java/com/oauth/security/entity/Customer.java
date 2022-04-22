@@ -56,9 +56,9 @@ public class Customer extends BaseModel {
 	@JsonProperty("profilePic")
 	private String profilePic;
 
-	@Field("products")
-	@JsonProperty("products")
-	private List<String> products;
+	@Field("product")
+	@JsonProperty("product")
+	private String product;
 
 	private List<String> roles;
 
