@@ -1,5 +1,6 @@
 package com.oauth.security.entity;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -25,12 +26,16 @@ import lombok.ToString;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Builder
-public class Customer extends BaseModel {
+public class Customer extends BaseModel implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	@Field("userName")
+	@JsonProperty("userName")
+	private String userName;
 
 	@Field("email")
 	@JsonProperty("email")
@@ -60,7 +65,7 @@ public class Customer extends BaseModel {
 	@JsonProperty("product")
 	private String product;
 
-	private List<String> roles;
+	private String roles;
 
 	@Field("walletDetails")
 	@JsonProperty("walletDetails")

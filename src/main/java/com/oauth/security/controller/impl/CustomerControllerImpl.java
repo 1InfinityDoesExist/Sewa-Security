@@ -24,10 +24,12 @@ public class CustomerControllerImpl implements CustomerController {
 	private CustomerService customerService;
 
 	@Override
-	public ResponseEntity<CustomerResponse> registerCustomerUsingPOST(CustomerRequest CustomerReqeust)
+	public ResponseEntity<CustomerResponse> registerCustomerUsingPOST(CustomerRequest customerRequest)
 			throws Exception {
-		log.info("-----");
-		return null;
+		log.info("-----CustomerControllerImpl Class, registerCustomerUsingPOST method-----");
+
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(customerService.registerCustomerUsingPOST(customerRequest));
 	}
 
 	@Override

@@ -8,4 +8,6 @@ import com.oauth.security.entity.Product;
 @Repository
 public interface ProductRepository extends MongoRepository<Product, String> {
 
+	Product findProductByName(String product);
+
 }

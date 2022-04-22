@@ -4,17 +4,22 @@ import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import com.oauth.security.entity.Customer;
 import com.oauth.security.entity.OtpDetails;
+import com.oauth.security.entity.Product;
+import com.oauth.security.model.request.CustomerRequest;
 import com.oauth.security.model.request.OTPVerificationRequest;
 import com.oauth.security.model.request.RegistrationRequest;
+import com.oauth.security.model.response.CustomerResponse;
 import com.oauth.security.model.response.OTPVerificationResponse;
 import com.oauth.security.model.response.RegistrationResponse;
 import com.oauth.security.repository.CustomerRepository;
 import com.oauth.security.repository.OtpDetailsRepository;
+import com.oauth.security.repository.ProductRepository;
 import com.oauth.security.service.CustomerService;
 import com.oauth.security.service.email.TwillioEmailService;
 import com.oauth.security.utils.OTPGenerator;
@@ -37,6 +42,12 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private TwillioEmailService twillioEmailService;
+
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
+	private ProductRepository productRepository;
 
 	@Value("${otp.expiry:15}")
 	private int otpExpiryTime;
@@ -127,6 +138,48 @@ public class CustomerServiceImpl implements CustomerService {
 			}
 		}
 		return response;
+	}
+
+	@Override
+	public CustomerResponse registerCustomerUsingPOST(CustomerRequest customerRequest) {
+		log.info("-----Persisting customer credentials into database");
+
+		Customer customer = customerRepository.findById(customerRequest.getId())
+				.orElseThrow(() -> new RuntimeException("Customer does not exist "));
+
+		log.info("-----Customer with id : {} is {}", customerRequest.getId(), customer);
+
+		if (ObjectUtils.isEmpty(customerRepository.findCustomerByUserNameAndProduct(customerRequest.getUserName(),
+				customer.getProduct()))) {
+			customer.setFirstName(customerRequest.getFirstName());
+			customer.setLastName(customerRequest.getLastName());
+			// customer.setRoles(getProductRoles(customer.getProduct()));
+			customer.setRoles("USER");
+			customer.setProfilePic(customerRequest.getProfilePic());
+			customer.setPassword(passwordEncoder.encode(customerRequest.getPassword()));
+
+			customerRepository.save(customer);
+
+			CustomerResponse response = new CustomerResponse();
+			response.setMessage("Customer registered successfully.");
+
+			return response;
+
+		} else {
+			throw new RuntimeException(
+					String.format("Customer with username %s already exist.", customerRequest.getUserName()));
+		}
+
+	}
+
+	private String getProductRoles(String product) {
+		log.info("-----Method to find roles by product.");
+
+		Product prod = productRepository.findProductByName(product);
+		if (ObjectUtils.isEmpty(prod)) {
+			throw new RuntimeException("Product does not exit.");
+		}
+		return prod.getRoles().get("CUSTOMER");
 
 	}
 }

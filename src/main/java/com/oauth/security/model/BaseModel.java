@@ -26,8 +26,6 @@ public class BaseModel implements Serializable {
 	*/
 	private static final long serialVersionUID = 1L;
 
-	@JsonProperty("id")
-	@Field("id")
 	@Id
 	private String id;
 
