@@ -21,6 +21,8 @@ public class OauthConsumer {
 
 		log.info("----Msg : {},   partition : {}, offset : {}", msg, partition, offset);
 
+		acknowledgment.acknowledge();
+
 	}
 
 }
