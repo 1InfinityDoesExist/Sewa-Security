@@ -191,7 +191,7 @@ public class CustomerServiceImpl implements CustomerService {
 	private String getProductRoles(String product) {
 		log.info("-----Method to find roles by product.");
 
-		Product prod = productRepository.findProductByName(product);
+		Product prod = productRepository.findProductByNameAndIsActive(product, true);
 		if (ObjectUtils.isEmpty(prod)) {
 			throw new RuntimeException("Product does not exit.");
 		}
