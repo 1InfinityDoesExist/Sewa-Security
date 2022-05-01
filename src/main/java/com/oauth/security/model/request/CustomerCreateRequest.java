@@ -15,7 +15,7 @@ import lombok.ToString;
 @ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CustomerRequest implements Serializable {
+public class CustomerCreateRequest implements Serializable {
 	/**
 	* 
 	*/
