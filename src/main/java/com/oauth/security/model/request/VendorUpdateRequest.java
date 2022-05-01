@@ -1,4 +1,4 @@
-package com.oauth.security.model.response;
+package com.oauth.security.model.request;
 
 import java.io.Serializable;
 
@@ -6,15 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
-import lombok.ToString;
 
 @Data
-@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class VendorResponse implements Serializable {
-
-	private String id;
-	private String msg;
+public class VendorUpdateRequest implements Serializable {
 
 }
