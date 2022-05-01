@@ -1,11 +1,17 @@
 package com.oauth.security.controller.impl;
 
+import java.util.List;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oauth.security.controller.CustomerController;
+import com.oauth.security.entity.Customer;
 import com.oauth.security.model.request.CustomerRequest;
 import com.oauth.security.model.request.OTPVerificationRequest;
 import com.oauth.security.model.request.RegistrationRequest;
@@ -24,8 +30,7 @@ public class CustomerControllerImpl implements CustomerController {
 	private CustomerService customerService;
 
 	@Override
-	public ResponseEntity<CustomerResponse> registerCustomerUsingPOST(CustomerRequest customerRequest)
-			throws Exception {
+	public ResponseEntity<CustomerResponse> createCustomerUsingPOST(CustomerRequest customerRequest) throws Exception {
 		log.info("-----CustomerControllerImpl Class, registerCustomerUsingPOST method-----");
 
 		return ResponseEntity.status(HttpStatus.CREATED)
@@ -56,6 +61,31 @@ public class CustomerControllerImpl implements CustomerController {
 	@Override
 	public ResponseEntity<OTPVerificationResponse> verifyMobileOTPUsingPOST(
 			OTPVerificationRequest oTPVerificationRequest) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<Customer> retrieveCustomerUsingGET(String id) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<List<Customer>> retrieveAllCustomerUsingGET(Pageable pageable) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<String> deleteCustomerUsingDELETE(String id) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<CustomerResponse> updateCustomerUsingPUT(@Valid CustomerRequest customerUpdateRequest,
+			String id) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
