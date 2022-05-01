@@ -1,18 +1,19 @@
 package com.oauth.security.controller.impl;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oauth.security.controller.CustomerController;
 import com.oauth.security.entity.Customer;
-import com.oauth.security.model.request.CustomerRequest;
+import com.oauth.security.model.request.CustomerCreateRequest;
+import com.oauth.security.model.request.CustomerUpdateRequest;
 import com.oauth.security.model.request.OTPVerificationRequest;
 import com.oauth.security.model.request.RegistrationRequest;
 import com.oauth.security.model.response.CustomerResponse;
@@ -30,11 +31,12 @@ public class CustomerControllerImpl implements CustomerController {
 	private CustomerService customerService;
 
 	@Override
-	public ResponseEntity<CustomerResponse> createCustomerUsingPOST(CustomerRequest customerRequest) throws Exception {
+	public ResponseEntity<CustomerResponse> createCustomerUsingPOST(CustomerCreateRequest customerCreateRequest)
+			throws Exception {
 		log.info("-----CustomerControllerImpl Class, registerCustomerUsingPOST method-----");
 
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(customerService.registerCustomerUsingPOST(customerRequest));
+				.body(customerService.registerCustomerUsingPOST(customerCreateRequest));
 	}
 
 	@Override
@@ -67,27 +69,32 @@ public class CustomerControllerImpl implements CustomerController {
 
 	@Override
 	public ResponseEntity<Customer> retrieveCustomerUsingGET(String id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("-----CustomerControllerImpl Class, retrieveCustomerUsingGET method.-----");
+
+		return ResponseEntity.status(HttpStatus.OK).body(customerService.retrieveCustomerUsingGET(id));
 	}
 
 	@Override
-	public ResponseEntity<List<Customer>> retrieveAllCustomerUsingGET(Pageable pageable) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseEntity<Page<Customer>> retrieveAllCustomerUsingGET(Pageable pageable) throws Exception {
+		log.info("-----CustomerControllerImpl Class, retrieveAllCustomerUsingGET method.-----");
+
+		return ResponseEntity.status(HttpStatus.OK).body(customerService.retrieveAllCustomerUsingGET(pageable));
 	}
 
 	@Override
-	public ResponseEntity<String> deleteCustomerUsingDELETE(String id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseEntity<ModelMap> deleteCustomerUsingDELETE(String id) throws Exception {
+		log.info("-----CustomerControllerImpl Class, deleteCustomerUsingDELETE method.-----");
+		customerService.deleteCustomerUsingDELETE(id);
+		return ResponseEntity.status(HttpStatus.OK).body(new ModelMap().addAttribute("msg", "success"));
 	}
 
 	@Override
-	public ResponseEntity<CustomerResponse> updateCustomerUsingPUT(@Valid CustomerRequest customerUpdateRequest,
+	public ResponseEntity<CustomerResponse> updateCustomerUsingPUT(@Valid CustomerUpdateRequest customerUpdateRequest,
 			String id) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("-----CustomerControllerImpl Class, updateCustomerUsingPUT method.-----");
+
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(customerService.updateCustomerUsingPUT(id, customerUpdateRequest));
 	}
 
 }

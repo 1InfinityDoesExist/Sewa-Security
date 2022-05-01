@@ -2,16 +2,26 @@ package com.oauth.security.service.impl;
 
 import java.util.Date;
 
+import javax.validation.Valid;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oauth.security.entity.Customer;
 import com.oauth.security.entity.OtpDetails;
 import com.oauth.security.entity.Product;
-import com.oauth.security.model.request.CustomerRequest;
+import com.oauth.security.model.request.CustomerCreateRequest;
+import com.oauth.security.model.request.CustomerUpdateRequest;
 import com.oauth.security.model.request.OTPVerificationRequest;
 import com.oauth.security.model.request.RegistrationRequest;
 import com.oauth.security.model.response.CustomerResponse;
@@ -54,6 +64,12 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Value("${email.verification.body}")
 	private String emailBody;
+
+	private static final ObjectMapper objectMapper;
+
+	static {
+		objectMapper = new ObjectMapper();
+	}
 
 	/**
 	 * 
@@ -141,22 +157,22 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public CustomerResponse registerCustomerUsingPOST(CustomerRequest customerRequest) {
+	public CustomerResponse registerCustomerUsingPOST(CustomerCreateRequest customerCreateRequest) {
 		log.info("-----Persisting customer credentials into database");
 
-		Customer customer = customerRepository.findById(customerRequest.getId())
+		Customer customer = customerRepository.findById(customerCreateRequest.getId())
 				.orElseThrow(() -> new RuntimeException("Customer does not exist "));
 
-		log.info("-----Customer with id : {} is {}", customerRequest.getId(), customer);
+		log.info("-----Customer with id : {} is {}", customerCreateRequest.getId(), customer);
 
-		if (ObjectUtils.isEmpty(customerRepository.findCustomerByUserNameAndProduct(customerRequest.getUserName(),
+		if (ObjectUtils.isEmpty(customerRepository.findCustomerByUserNameAndProduct(customerCreateRequest.getUserName(),
 				customer.getProduct()))) {
-			customer.setFirstName(customerRequest.getFirstName());
-			customer.setLastName(customerRequest.getLastName());
+			customer.setFirstName(customerCreateRequest.getFirstName());
+			customer.setLastName(customerCreateRequest.getLastName());
 			// customer.setRoles(getProductRoles(customer.getProduct()));
 			customer.setRoles("USER");
-			customer.setProfilePic(customerRequest.getProfilePic());
-			customer.setPassword(passwordEncoder.encode(customerRequest.getPassword()));
+			customer.setProfilePic(customerCreateRequest.getProfilePic());
+			customer.setPassword(passwordEncoder.encode(customerCreateRequest.getPassword()));
 
 			customerRepository.save(customer);
 
@@ -167,7 +183,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 		} else {
 			throw new RuntimeException(
-					String.format("Customer with username %s already exist.", customerRequest.getUserName()));
+					String.format("Customer with username %s already exist.", customerCreateRequest.getUserName()));
 		}
 
 	}
@@ -180,6 +196,60 @@ public class CustomerServiceImpl implements CustomerService {
 			throw new RuntimeException("Product does not exit.");
 		}
 		return prod.getRoles().get("CUSTOMER");
+
+	}
+
+	@Override
+	public Customer retrieveCustomerUsingGET(String id) {
+		log.info("-----CustomerServiceImpl class, retrieveCustomerUsingGET method , Id : {}", id);
+		Customer customer = customerRepository.findCustomerByIdAndIsActive(id, true);
+		if (ObjectUtils.isEmpty(customer)) {
+			throw new RuntimeException(String.format("Customer with id %s does not exist", id));
+		}
+		return customer;
+	}
+
+	@Override
+	public Page<Customer> retrieveAllCustomerUsingGET(Pageable pageable) {
+		log.info("-----CustomerServiceImpl class, retrieveCustomerUsingGET method.-----");
+		Page<Customer> customers = customerRepository.findCustomerByIsActive(true, pageable);
+		log.info("-----Customers : {}", customers.getNumberOfElements());
+		return customers;
+
+	}
+
+	@Override
+	public void deleteCustomerUsingDELETE(String id) {
+		log.info("-----CustomerServiceImpl class, deleteCustomerUsingDELETE method.-----");
+		Customer customer = retrieveCustomerUsingGET(id);
+		customer.setActive(false);
+		customerRepository.save(customer);
+		return;
+	}
+
+	@Override
+	public CustomerResponse updateCustomerUsingPUT(String id, @Valid CustomerUpdateRequest customerUpdateRequest)
+			throws JsonProcessingException, ParseException {
+		log.info("-----CustomerServiceImpl class, deleteCustomerUsingDELETE method.-----");
+
+		Customer customer = retrieveCustomerUsingGET(id);
+
+		JSONObject payloadObject = (JSONObject) new JSONParser()
+				.parse(objectMapper.writeValueAsString(customerUpdateRequest));
+
+		JSONObject dbCustomerObject = (JSONObject) new JSONParser().parse(objectMapper.writeValueAsString(customer));
+
+		for (Object obj : payloadObject.keySet()) {
+			String param = (String) obj;
+			dbCustomerObject.put(param, payloadObject.get(param));
+		}
+
+		customerRepository.save(objectMapper.readValue(dbCustomerObject.toJSONString(), Customer.class));
+
+		CustomerResponse response = new CustomerResponse();
+		response.setMessage("Customer update successfully.");
+
+		return response;
 
 	}
 }
