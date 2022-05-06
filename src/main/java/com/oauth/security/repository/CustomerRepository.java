@@ -18,4 +18,6 @@ public interface CustomerRepository extends MongoRepository<Customer, String> {
 
 	Page<Customer> findCustomerByIsActive(boolean b, Pageable pageable);
 
+	Customer findCustomerByMobileAndProduct(String mobile, String product);
+
 }

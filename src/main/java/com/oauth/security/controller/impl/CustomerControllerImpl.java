@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oauth.security.controller.CustomerController;
@@ -55,16 +56,20 @@ public class CustomerControllerImpl implements CustomerController {
 	}
 
 	@Override
-	public ResponseEntity<RegistrationResponse> registerMobileUsingPOST(RegistrationRequest registration) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseEntity<RegistrationResponse> updateMobileUsingPOST(RegistrationRequest registration) {
+
+		log.info("----Updating mobile number for user : {}", registration.getEmail());
+
+		return ResponseEntity.status(HttpStatus.OK).body(customerService.updateMobileUsingPOST(registration));
 	}
 
 	@Override
 	public ResponseEntity<OTPVerificationResponse> verifyMobileOTPUsingPOST(
 			OTPVerificationRequest oTPVerificationRequest) {
-		// TODO Auto-generated method stub
-		return null;
+
+		log.info("-----CustomerControllerImpl Class, verifyMobileOTPUsingPOST method.-----");
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(customerService.verifyMobileOTPUsingPOST(oTPVerificationRequest));
 	}
 
 	@Override

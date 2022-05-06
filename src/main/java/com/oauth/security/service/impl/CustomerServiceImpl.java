@@ -32,6 +32,7 @@ import com.oauth.security.repository.OtpDetailsRepository;
 import com.oauth.security.repository.ProductRepository;
 import com.oauth.security.service.CustomerService;
 import com.oauth.security.service.email.TwillioEmailService;
+import com.oauth.security.service.sms.TwillioSMSService;
 import com.oauth.security.utils.OTPGenerator;
 import com.sendgrid.Response;
 
@@ -52,6 +53,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private TwillioEmailService twillioEmailService;
+
+	@Autowired
+	private TwillioSMSService twillioSMSService;
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
@@ -251,5 +255,71 @@ public class CustomerServiceImpl implements CustomerService {
 
 		return response;
 
+	}
+
+	@Override
+	public RegistrationResponse updateMobileUsingPOST(RegistrationRequest registration) {
+		log.info("-----CustomerServiceImpl class, updateMobileUsingPOST method.-----");
+		if (ObjectUtils.isEmpty(registration.getEmail())) {
+			throw new RuntimeException("----Moible number must not be null or empty");
+		}
+
+		Customer customer = customerRepository.findCustomerByMobileAndProduct(registration.getMobile(),
+				registration.getProduct());
+
+		log.info("----Customer from db : {}", customer);
+
+		if (!ObjectUtils.isEmpty(customer)) {
+			throw new RuntimeException(
+					String.format("Customer with mobile %s already exist", registration.getMobile()));
+		}
+
+		OtpDetails otpDetails = otpDetailsRepository.findOtpDetailsByMobileAndProduct(registration.getMobile(),
+				registration.getProduct());
+		if (ObjectUtils.isEmpty(otpDetails)) {
+			otpDetails = new OtpDetails();
+		}
+
+		otpDetails.setMobile(registration.getMobile());
+		int otp = otpGenerator.generateOTP();
+		otpDetails.setMobileOtp(otp);
+		otpDetails.setProduct(registration.getProduct());
+		otpDetails.setMobileOtpExpiryDate(otpExpiryTime);
+
+		log.info("----Sending otp to the registered mobile number----");
+		twillioSMSService.sendSMS(registration.getMobile(), String.format("Your one time password (OTP) - %s", otp));
+
+		otpDetailsRepository.save(otpDetails);
+
+		RegistrationResponse response = new RegistrationResponse();
+		response.setMsg(String.format("OTP has been sent to  %s", registration.getMobile()));
+		return response;
+
+	}
+
+	@Override
+	public OTPVerificationResponse verifyMobileOTPUsingPOST(OTPVerificationRequest otpVerificationRequest) {
+		log.info("-----CustomerServiceImpl class, updateMobileUsingPOST method.-----");
+
+		OtpDetails otpDetails = otpDetailsRepository.findOtpDetailsByMobileAndProduct(
+				otpVerificationRequest.getMobile(), otpVerificationRequest.getProduct());
+		if (ObjectUtils.isEmpty(otpDetails)) {
+			throw new RuntimeException("Invalid otp");
+		}
+
+		if (otpDetails.getMobileOtp() == otpVerificationRequest.getMobileOtp()) {
+			if (otpDetails.isMobileOtpExpired()) {
+				throw new RuntimeException("OPT has been expired. Please request for a new one.");
+			}
+			otpDetailsRepository.delete(otpDetails);
+			Customer customer = customerRepository.findCustomerByEmailAndProduct(otpVerificationRequest.getEmail(),
+					otpVerificationRequest.getProduct());
+			customer.setMobile(otpVerificationRequest.getMobile());
+			customerRepository.save(customer);
+			OTPVerificationResponse response = new OTPVerificationResponse();
+			response.setMessage("Successfully updated the mobile number");
+			return response;
+		}
+		throw new RuntimeException("OTP is incorrect. Please check the otp and try again");
 	}
 }

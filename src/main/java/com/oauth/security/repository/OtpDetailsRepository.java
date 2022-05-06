@@ -10,4 +10,6 @@ public interface OtpDetailsRepository extends MongoRepository<OtpDetails, String
 
 	OtpDetails findOtpDetailsByEmailAndProduct(String email, String product);
 
+	OtpDetails findOtpDetailsByMobileAndProduct(String mobile, String product);
+
 }

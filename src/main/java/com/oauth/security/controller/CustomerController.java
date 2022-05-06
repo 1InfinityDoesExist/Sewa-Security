@@ -54,7 +54,7 @@ public interface CustomerController {
 			@ApiResponse(code = 404, message = "Not Found"), @ApiResponse(code = 200, message = "OK") })
 	@RequestMapping(value = "/v1.0/customers/register-mobile", consumes = { "application/json" }, produces = {
 			"application/json" }, method = RequestMethod.POST)
-	public ResponseEntity<RegistrationResponse> registerMobileUsingPOST(
+	public ResponseEntity<RegistrationResponse> updateMobileUsingPOST(
 			@Valid @RequestBody RegistrationRequest registration);
 
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created", response = OTPVerificationResponse.class),

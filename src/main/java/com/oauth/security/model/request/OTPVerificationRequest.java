@@ -18,6 +18,7 @@ public class OTPVerificationRequest implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	@NotBlank
 	private String email;
 	private String mobile;
 	private int emailOtp;
