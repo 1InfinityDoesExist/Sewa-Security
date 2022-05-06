@@ -18,6 +18,7 @@ public class RegistrationRequest implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	@NotBlank(message = "Email Id must not null or empty")
 	private String email;
 	private String mobile;
 

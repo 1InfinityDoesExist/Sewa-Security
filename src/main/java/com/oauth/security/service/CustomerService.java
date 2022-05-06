@@ -35,4 +35,8 @@ public interface CustomerService {
 	CustomerResponse updateCustomerUsingPUT(String id, @Valid CustomerUpdateRequest customerUpdateRequest)
 			throws JsonProcessingException, ParseException;
 
+	RegistrationResponse updateMobileUsingPOST(RegistrationRequest registration);
+
+	OTPVerificationResponse verifyMobileOTPUsingPOST(OTPVerificationRequest oTPVerificationRequest);
+
 }
