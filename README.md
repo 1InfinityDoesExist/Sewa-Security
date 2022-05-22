@@ -1,5 +1,5 @@
 # Sewa-Security
-# ----------------------Nginx Setup---------------------------------------------
+
 # Nginx
 sudo apt-get install nginx
 sudo apt update;
@@ -34,6 +34,3 @@ index.html
     <p>We have just configured our Nginx web server on Ubuntu Server!</p>
 </body>
 </html>
-
-
-# ------------------------------------------------------------------------------------------
