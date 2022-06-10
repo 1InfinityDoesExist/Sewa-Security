@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.oauth.security.entity.Product;
 import com.oauth.security.model.request.ProductCreateRequest;
-import com.oauth.security.model.request.ProductUpdateRequest;
 import com.oauth.security.model.response.ProductResponse;
 
 import io.swagger.annotations.Api;

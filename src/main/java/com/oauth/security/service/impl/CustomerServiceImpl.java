@@ -9,6 +9,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,6 +21,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Objects;
 import com.oauth.security.entity.Customer;
 import com.oauth.security.entity.OtpDetails;
 import com.oauth.security.entity.Product;
@@ -38,6 +43,7 @@ import com.sendgrid.Response;
 
 import lombok.extern.slf4j.Slf4j;
 
+@CacheConfig(cacheNames = { "customer" })
 @Slf4j
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -62,6 +68,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	private ProductRepository productRepository;
+
+	@Autowired
+	private CacheManager cacheManager;
 
 	@Value("${otp.expiry:15}")
 	private int otpExpiryTime;
@@ -203,14 +212,32 @@ public class CustomerServiceImpl implements CustomerService {
 
 	}
 
+	/**
+	 * @Cacheable(value = "customer", key = "#id", sync = true)
+	 * 
+	 * @Transactional(readOnly = true)
+	 */
 	@Override
 	public Customer retrieveCustomerUsingGET(String id) {
 		log.info("-----CustomerServiceImpl class, retrieveCustomerUsingGET method , Id : {}", id);
-		Customer customer = customerRepository.findCustomerByIdAndIsActive(id, true);
-		if (ObjectUtils.isEmpty(customer)) {
-			throw new RuntimeException(String.format("Customer with id %s does not exist", id));
+		Customer customer = null;
+		boolean isCacheNull = true;
+
+		Cache cache = cacheManager.getCache("customer");
+		if (!ObjectUtils.isEmpty(cache)) {
+			isCacheNull = false;
+			customer = cache.get(id + "_false", Customer.class);
+			log.info("----Customer from cache : {}", customer);
+			if (!ObjectUtils.isEmpty(customer)) {
+				return customer;
+			}
 		}
-		return customer;
+		customer = customerRepository.findCustomerByIdAndIsActive(id, true);
+		if (!ObjectUtils.isEmpty(customer) && !isCacheNull) {
+			cache.put(id + "_false", customer);
+			return customer;
+		}
+		throw new RuntimeException(String.format("Customer with id %s does not exist", id));
 	}
 
 	@Override

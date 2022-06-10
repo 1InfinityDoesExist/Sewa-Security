@@ -42,7 +42,8 @@ public class TwillioEmailService {
 			log.info("-----Response Status Code : {} and body {}", response.getStatusCode(), response.getBody());
 			return response;
 		} catch (IOException ex) {
+			throw new RuntimeException("-----Error from gsmpt server----");
 		}
-		return null;
+
 	}
 }
