@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.oauth.security.entity.FacebookConsole;
-import com.oauth.security.repository.FacebookConsolerRepository;
+import com.oauth.security.repository.mongo.FacebookConsolerRepository;
 
 import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;

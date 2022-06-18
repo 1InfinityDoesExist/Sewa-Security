@@ -24,7 +24,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.oauth.security.entity.FacebookConsole;
 import com.oauth.security.model.request.FacebookConsoleCreateRequest;
 import com.oauth.security.model.request.FacebookConsoleUpdateRequest;
-import com.oauth.security.repository.FacebookConsolerRepository;
+import com.oauth.security.repository.mongo.FacebookConsolerRepository;
 import com.oauth.security.service.FacebookConsoleService;
 
 import lombok.extern.slf4j.Slf4j;

@@ -24,7 +24,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.oauth.security.entity.GoogleConsole;
 import com.oauth.security.model.request.GoogleConsoleCreateRequest;
 import com.oauth.security.model.request.GoogleConsoleUpdateRequest;
-import com.oauth.security.repository.GoogleConsoleRepository;
+import com.oauth.security.repository.mongo.GoogleConsoleRepository;
 import com.oauth.security.service.GoogleConsoleService;
 
 import lombok.extern.slf4j.Slf4j;

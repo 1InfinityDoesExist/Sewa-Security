@@ -1,4 +1,4 @@
-package com.oauth.security.repository;
+package com.oauth.security.repository.mongo;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

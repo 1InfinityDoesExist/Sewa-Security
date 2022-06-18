@@ -25,7 +25,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfo;
 import com.oauth.security.entity.GoogleConsole;
-import com.oauth.security.repository.GoogleConsoleRepository;
+import com.oauth.security.repository.mongo.GoogleConsoleRepository;
 
 import lombok.extern.slf4j.Slf4j;
 

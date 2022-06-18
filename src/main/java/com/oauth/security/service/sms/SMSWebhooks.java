@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.oauth.security.model.SMSMessage;
-import com.oauth.security.repository.SMSRepository;
+import com.oauth.security.repository.mongo.SMSRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
