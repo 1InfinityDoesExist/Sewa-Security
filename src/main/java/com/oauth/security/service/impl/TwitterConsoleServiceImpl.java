@@ -24,7 +24,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.oauth.security.entity.TwitterConsole;
 import com.oauth.security.model.request.TwitterConsoleCreateRequest;
 import com.oauth.security.model.request.TwitterConsoleUpdateRequest;
-import com.oauth.security.repository.TwitterConsoleRepository;
+import com.oauth.security.repository.mongo.TwitterConsoleRepository;
 import com.oauth.security.service.TwitterConsoleService;
 
 import lombok.extern.slf4j.Slf4j;

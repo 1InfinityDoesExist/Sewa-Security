@@ -110,15 +110,28 @@ public class SearchServiceImpl implements SearchService {
 
 	private void buildQuery(BoolQueryBuilder queryBuilder, String keyword, Entry<String, List<String>> entry) {
 
+		String str = "DBRef('tenant', 'tenantId')";
+		str = str.replace("tenantId", "627b9c072c50de0001987e1f");
+
+		System.out.println(str);
+
+//		queryBuilder.must(QueryBuilders.matchQuery("providedByTenant", str));
+
 		log.info("----Creating search query-----");
-		BoolQueryBuilder indexQuery = QueryBuilders.boolQuery().must(QueryBuilders.typeQuery("instance"));
+		BoolQueryBuilder indexQuery = QueryBuilders.boolQuery().must(QueryBuilders.typeQuery("product")).
+		// .must(QueryBuilders.queryStringQuery(str).field("providedByTenant"))
+				must(QueryBuilders.matchQuery("providedByTenant", str));
+
+		;
 
 		if (CollectionUtils.isEmpty(entry.getValue())) {
 			indexQuery.must(QueryBuilders.queryStringQuery(String.format(keyword, searchRegex)));
 		} else {
 			BoolQueryBuilder fieldQuery = QueryBuilders.boolQuery();
 			entry.getValue().stream().forEach(field -> {
-				fieldQuery.should(QueryBuilders.queryStringQuery(String.format(keyword, searchRegex)).field(field));
+
+				fieldQuery.should(QueryBuilders.queryStringQuery(String.format(searchRegex, keyword)).field(field));
+
 			});
 
 			indexQuery.must(fieldQuery);

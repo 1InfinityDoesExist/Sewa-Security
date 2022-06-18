@@ -12,7 +12,7 @@ import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.stereotype.Service;
 
 import com.oauth.security.entity.OauthClients;
-import com.oauth.security.repository.OauthClientRepository;
+import com.oauth.security.repository.mongo.OauthClientRepository;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -14,7 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oauth.security.entity.Vendor;
 import com.oauth.security.model.request.VendorUpdateRequest;
 import com.oauth.security.model.response.VendorResponse;
-import com.oauth.security.repository.VendorRepository;
+import com.oauth.security.repository.mongo.VendorRepository;
 import com.oauth.security.service.VendorService;
 
 import lombok.extern.slf4j.Slf4j;

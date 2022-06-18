@@ -17,7 +17,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.oauth.security.entity.Customer;
-import com.oauth.security.repository.CustomerRepository;
+import com.oauth.security.repository.mongo.CustomerRepository;
 import com.oauth.security.utils.CommonConstants;
 
 import lombok.extern.slf4j.Slf4j;

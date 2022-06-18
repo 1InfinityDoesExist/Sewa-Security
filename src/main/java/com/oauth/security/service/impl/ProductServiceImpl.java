@@ -9,7 +9,7 @@ import org.springframework.util.ObjectUtils;
 import com.oauth.security.entity.Product;
 import com.oauth.security.model.request.ProductCreateRequest;
 import com.oauth.security.model.response.ProductResponse;
-import com.oauth.security.repository.ProductRepository;
+import com.oauth.security.repository.mongo.ProductRepository;
 import com.oauth.security.service.ProductService;
 
 import lombok.extern.slf4j.Slf4j;

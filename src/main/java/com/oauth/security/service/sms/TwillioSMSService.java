@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.oauth.security.model.SMSMessage;
-import com.oauth.security.repository.SMSRepository;
+import com.oauth.security.repository.mongo.SMSRepository;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 

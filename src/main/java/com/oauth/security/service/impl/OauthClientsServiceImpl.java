@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import com.oauth.security.entity.OauthClients;
 import com.oauth.security.model.request.OauthClientsRequest;
 import com.oauth.security.model.response.OauthClientsResponse;
-import com.oauth.security.repository.OauthClientRepository;
+import com.oauth.security.repository.mongo.OauthClientRepository;
 import com.oauth.security.service.OauthClientsServcie;
 
 import lombok.extern.slf4j.Slf4j;
