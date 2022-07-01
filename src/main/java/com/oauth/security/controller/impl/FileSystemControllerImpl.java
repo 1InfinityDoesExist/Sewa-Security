@@ -1,5 +1,6 @@
 package com.oauth.security.controller.impl;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,7 +28,7 @@ public class FileSystemControllerImpl implements FileSystemController {
 	@Override
 	public ResponseEntity<ContentResponse> uploadContentUsingPOST(MultipartFile file, String filePath,
 			List<String> tags, String fileName, String description, Boolean overrideFile,
-			HttpServletRequest httpServletRequest) {
+			HttpServletRequest httpServletRequest) throws IOException {
 		log.info("----Method to upload content to the given filePath.----");
 
 		if (file.isEmpty()) {
