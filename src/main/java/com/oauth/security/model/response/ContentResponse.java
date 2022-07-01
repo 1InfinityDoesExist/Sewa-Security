@@ -109,4 +109,13 @@ public class ContentResponse {
 
 	public ContentResponse() {
 	}
+
+	public ContentResponse(UUID id, HttpStatus status, String msg, String url, String downloadUrl, String description) {
+		this.id = id;
+		this.status = status;
+		this.msg = msg;
+		this.url = url;
+		this.downloadUrl = downloadUrl;
+		this.description = description;
+	}
 }

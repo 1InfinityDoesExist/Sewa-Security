@@ -1,5 +1,6 @@
 package com.oauth.security.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +26,7 @@ public interface FileSystemController {
 	@ApiResponses(value = { @ApiResponse(code = 201, message = "Created", response = ContentResponse.class),
 			@ApiResponse(code = 401, message = "Unauthorized"), @ApiResponse(code = 403, message = "Forbidden"),
 			@ApiResponse(code = 404, message = "Not Found"), @ApiResponse(code = 200, message = "OK") })
-	@RequestMapping(value = "/v1.0/file-system/upload", consumes = { "application/json" }, produces = {
+	@RequestMapping(value = "/v1.0/file-system/upload", consumes = { "multipart/form-data" }, produces = {
 			"application/json" }, method = RequestMethod.POST)
 	public ResponseEntity<ContentResponse> uploadContentUsingPOST(
 			@ApiParam(value = "file detail") @RequestPart("file") MultipartFile file,
@@ -34,6 +35,6 @@ public interface FileSystemController {
 			@ApiParam(value = "file name without extension") @RequestParam(value = "fileName", required = false) String fileName,
 			@ApiParam(value = "description") @RequestParam(value = "description", required = false) String description,
 			@ApiParam(value = "overrideFile") @RequestParam(value = "overrideFile", defaultValue = "false") Boolean overrideFile,
-			HttpServletRequest httpServletRequest);
+			HttpServletRequest httpServletRequest) throws IOException;
 
 }
