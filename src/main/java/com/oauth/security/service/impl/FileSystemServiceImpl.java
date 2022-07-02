@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,6 +19,8 @@ import javax.imageio.ImageIO;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -41,6 +44,7 @@ import lombok.extern.slf4j.Slf4j;
 public class FileSystemServiceImpl implements FileSystemService {
 
 	private String basePath = "/home/gaian/Videos/Learnings/sewa-security-data";
+	private String mountPath = "/home/gaian/Videos/content-data";
 
 	@Autowired
 	private ContentRepository contentRepository;
@@ -185,6 +189,23 @@ public class FileSystemServiceImpl implements FileSystemService {
 
 			log.info("-----URI Component  : {}", uriComponent.toString());
 			return uriComponent.toString();
+		}
+		throw new RuntimeException("ContentInfo not found.....!!!!!");
+	}
+
+	@Override
+	public Resource getContent(UUID id) {
+		Optional<ContentInfo> info = contentRepository.findById(id);
+		if (info.isPresent()) {
+			log.info("-----ContentInfo : {}", info);
+			Path path = Paths.get(mountPath, info.get().getFilePath(), info.get().getFileName()).toAbsolutePath()
+					.normalize();
+			try {
+				Resource resource = new UrlResource(path.toUri());
+				return resource;
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
 		}
 		throw new RuntimeException("ContentInfo not found.....!!!!!");
 	}
