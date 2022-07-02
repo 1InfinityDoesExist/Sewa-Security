@@ -7,9 +7,14 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,10 +48,26 @@ public class FileSystemControllerImpl implements FileSystemController {
 						.overrideFile(overrideFile).build()));
 	}
 
+	/**
+	 * Download file
+	 */
 	@Override
 	public ResponseEntity<byte[]> getContentUsingGET(UUID id, HttpServletRequest request) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+		Resource resource = fileSystemService.getContent(id);
+		log.info("-----Resource path : {}", resource.getFile().getAbsolutePath());
+
+		String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+
+		// Fallback to the default content type if type could not be determined
+		if (ObjectUtils.isEmpty(contentType)) {
+			contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+		}
+
+		// Download a file
+		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
+				.contentLength(resource.getFile().length())
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(IOUtils.toByteArray(resource.getInputStream()));
 	}
 
 	@Override
