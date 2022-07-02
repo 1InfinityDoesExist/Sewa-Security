@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.imageio.ImageIO;
@@ -22,9 +23,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.oauth.security.entity.ContentInfo;
 import com.oauth.security.model.FileProperties;
+import com.oauth.security.model.NginxProperties;
 import com.oauth.security.model.request.ContentRequest;
 import com.oauth.security.model.response.ContentResponse;
 import com.oauth.security.repository.mysql.ContentRepository;
@@ -40,6 +44,9 @@ public class FileSystemServiceImpl implements FileSystemService {
 
 	@Autowired
 	private ContentRepository contentRepository;
+
+	@Autowired
+	private NginxProperties nginxProperties;
 
 	@Override
 	public ContentResponse uploadFile(ContentRequest request) throws IOException {
@@ -63,14 +70,19 @@ public class FileSystemServiceImpl implements FileSystemService {
 
 		ContentInfo contentInfo = new ContentInfo();
 
+		contentInfo.setLastModifiedBy(UUID.randomUUID().toString());
 		contentInfo.setCreatedBy(UUID.randomUUID().toString());
 		contentInfo.setContentLength(fileProperties.getSize());
 		contentInfo.setContentType(fileProperties.getType());
 		contentInfo.setFileExtension(fileProperties.getExtension());
 		contentInfo.setFileName(fileProperties.getName());
 		contentInfo.setMd5CheckSum(DigestUtils.md5Hex(request.getFile().getInputStream()));
-		contentInfo.setFilePath(
-				new StringBuilder().append(path).append(FileSystems.getDefault().getSeparator()).toString());
+
+		Path p = Paths
+				.get(new StringBuilder().append(FileSystems.getDefault().getSeparator())
+						.append(!ObjectUtils.isEmpty(request.getFilePath()) ? request.getFilePath() : "").toString())
+				.toAbsolutePath().normalize();
+		contentInfo.setFilePath(p.toString());
 		contentInfo.setDescription(request.getDescription());
 		contentInfo.setServiceId(UUID.randomUUID().toString());
 		contentInfo.setTenantId(UUID.randomUUID().toString());
@@ -93,6 +105,13 @@ public class FileSystemServiceImpl implements FileSystemService {
 
 	}
 
+	/**
+	 * 
+	 * @param file
+	 * @param path
+	 * @param fileName
+	 * @return
+	 */
 	private FileProperties getFileProperties(MultipartFile file, Path path, String fileName) {
 
 		FileProperties properties = new FileProperties();
@@ -106,6 +125,11 @@ public class FileSystemServiceImpl implements FileSystemService {
 		return properties;
 	}
 
+	/**
+	 * 
+	 * @param imagePath
+	 * @return
+	 */
 	private Dimension getImageDimension(String imagePath) {
 		try {
 			log.info("-----ImagePath : {}", imagePath);
@@ -143,6 +167,26 @@ public class FileSystemServiceImpl implements FileSystemService {
 						? FilenameUtils.getBaseName(request.getFile().getOriginalFilename())
 						: request.getFileName())
 				.append(".").append(FilenameUtils.getExtension(request.getFile().getOriginalFilename())).toString();
+	}
+
+	/**
+	 * 
+	 */
+	@Override
+	public String getContentUri(UUID id) {
+
+		Optional<ContentInfo> info = contentRepository.findById(id);
+		if (info.isPresent()) {
+			log.info("-----ContentInfo : {}", info);
+			UriComponents uriComponent = UriComponentsBuilder.newInstance().scheme(nginxProperties.getScheme())
+					.host(nginxProperties.getHost()).port(nginxProperties.getPort()).path(nginxProperties.getPath())
+					.path(info.get().getFilePath()).path(FileSystems.getDefault().getSeparator())
+					.path(info.get().getFileName()).encode().build();
+
+			log.info("-----URI Component  : {}", uriComponent.toString());
+			return uriComponent.toString();
+		}
+		throw new RuntimeException("ContentInfo not found.....!!!!!");
 	}
 
 }
