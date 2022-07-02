@@ -29,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.oauth.security.config.rabbitmq.RabbitMQSender;
 import com.oauth.security.entity.ContentInfo;
 import com.oauth.security.model.FileProperties;
 import com.oauth.security.model.NginxProperties;
@@ -45,6 +46,9 @@ public class FileSystemServiceImpl implements FileSystemService {
 
 	private String basePath = "/home/gaian/Videos/Learnings/sewa-security-data";
 	private String mountPath = "/home/gaian/Videos/content-data";
+
+	@Autowired
+	RabbitMQSender rabbitMQSender;
 
 	@Autowired
 	private ContentRepository contentRepository;
@@ -103,6 +107,11 @@ public class FileSystemServiceImpl implements FileSystemService {
 
 		String uriComponents = "http://localhost:8580/v1.0/file-system/view/" + contentInfo.getId();
 		String downloadUrl = "http://localhost:8580/v1.0/file-system/download/" + contentInfo.getId();
+
+//		JMSProducer pp = new JMSProducer();
+//		pp.sendMessage("standalone-activemq-queue", "Hello frands.");
+
+		rabbitMQSender.send("heello");
 
 		return new ContentResponse(contentInfo.getId(), HttpStatus.OK, "Success", uriComponents, downloadUrl,
 				request.getDescription());
